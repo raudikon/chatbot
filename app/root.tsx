@@ -1,5 +1,6 @@
 import {
   Form,
+  Outlet,
   Scripts,
   ScrollRestoration,
   isRouteErrorResponse,
@@ -10,36 +11,10 @@ import appStylesHref from "./app.css?url";
 
 export default function App() {
   return (
-    <>
-      <div id="sidebar">
-        <h1>React Router Contacts</h1>
-        <div>
-          <Form id="search-form" role="search">
-            <input
-              aria-label="Search contacts"
-              id="q"
-              name="q"
-              placeholder="Search"
-              type="search"
-            />
-            <div aria-hidden hidden={true} id="search-spinner" />
-          </Form>
-          <Form method="post">
-            <button type="submit">New</button>
-          </Form>
-        </div>
-        <nav>
-          <ul>
-            <li>
-              <a href={`/contacts/1`}>Your Name</a>
-            </li>
-            <li>
-              <a href={`/contacts/2`}>Your Friend</a>
-            </li>
-          </ul>
-        </nav>
-      </div>
-    </>
+    <div>
+      <h1>welcome to my website</h1>
+      <Outlet />
+    </div>
   );
 }
 
