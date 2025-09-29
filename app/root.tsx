@@ -4,15 +4,18 @@ import {
   Scripts,
   ScrollRestoration,
   isRouteErrorResponse,
+  Link
 } from "react-router";
 import type { Route } from "./+types/root";
 
 import appStylesHref from "./app.css?url";
+import Login from "./routes/login";
 
 export default function App() {
   return (
     <div>
-      <h1>welcome to my website</h1>
+      <h1>Welcome to my website :3</h1>
+      <Login />
       <Outlet />
     </div>
   );

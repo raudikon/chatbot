@@ -1,18 +1,39 @@
-import { Form } from "react-router";
+import { Form, useNavigate } from "react-router";
 import { useState } from "react"
+import { Link } from "react-router";
+import { authClient } from "../lib/authClient";
+
+// const navigate = useNavigate()
 
 export default function SignUp() {
     console.log('accessing /login route')
 
     const [userInputs, setUserInputs] = useState(
         {
-            username: 'testname',
-            user_email: 'testemail',
-            user_pw: 'testpassword'
+            username: '',
+            user_email: '',
+            user_pw: ''
         }
     )
-    const handleSignUp = () => {
-        console.log('handle sign up')
+    const handleSignUp = async () => {
+        const { data, error } = await authClient.signUp.email({
+            email: userInputs.user_email,
+            password: userInputs.user_pw,// user password -> min 8 characters by default
+            name: userInputs.username, // user display name
+            image: undefined, // User image URL (optional)
+            callbackURL: undefined// A URL to redirect to after the user verifies their email (optional)
+        }, {
+            onRequest: (ctx) => {
+                //show loading
+            },
+            onSuccess: (ctx) => {
+                //navigate to home
+            },
+            onError: (ctx) => {
+                // display the error message
+                alert(ctx.error.code);
+            },
+        });
     }
 
     return (
@@ -53,6 +74,13 @@ export default function SignUp() {
                 </div>
 
             </Form>
+
+
+            <Link to='/login'>
+                <button>Click here to login in instead</button>
+            </Link>
+
+
         </div>
 
     );

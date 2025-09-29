@@ -1,12 +1,9 @@
-import { authClient } from "../server/auth.server"; //import the auth client
+import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router'
+import { server_auth } from '../server/auth.server'
 
-export default function Auth_Route() {
-    console.log('accessing /api/auth/* route')
-    return (
-        <div>
-            <h2>Ooh. somebodys doin a lil.. LOGGING IN...</h2>
-        </div>
-
-    );
+export async function loader({ request }: LoaderFunctionArgs) {
+    return server_auth.handler(request)
 }
-
+export async function action({ request }: ActionFunctionArgs) {
+    return server_auth.handler(request)
+}

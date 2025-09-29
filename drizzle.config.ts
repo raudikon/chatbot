@@ -3,7 +3,7 @@ import 'dotenv/config'
 
 export default defineConfig({
     dialect: "postgresql",
-    schema: "./auth-schema.ts",
+    schema: "app/db/auth-schema.ts",
     out: "./db",
     dbCredentials:
     {
@@ -11,5 +11,4 @@ export default defineConfig({
 @aws-1-us-east-2.pooler.supabase.com:6543/postgres`
     },
 });
-
 

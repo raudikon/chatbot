@@ -79,3 +79,28 @@ HELL YEA, YOU GET A FREE SCHEMA. but this is a better-auth cli generate, not a d
 # notes after lunch 
 
 goal: let's get a frontend up and working that can pass parameters to a login function, the login function will redirect logged in user to homepage which displays hello email. 
+
+i got an error about "buffers" which is a node.js global, and not natively avaialble in browsers. to the best of my understanding this is bc i tried to run code that should be for the backend on the frontend. paris mentioned in his lecture that this is a hgue mindfuck when using react router. i understand that to overcome this you need to use loaders and actions that take care of interacting with the server for you. 
+
+loaders: a function you attach to a route, which runs before the routes component renders usually to fetch data. the stuff it returns in avaialble via the useloaderdata hook inside the route component 
+
+actions: run in response to a request, ideal for things like login, singup, deleting a post, any mutation. actions can read the form data via request.formdata and return a response or redirect. 
+
+
+goal2: get a functioning route to login via betterauth, but begin by creating a call to betteraut api wit login deets. 
+
+The <Form method="post"> automatically submits to the route’s action.
+
+If the route has an action defined in the route config, the form submission triggers it.
+
+You don’t need any extra event handlers on the form or button.
+
+# notes after mental breakdown #1 
+i need a better auth server instance 
+tjere's a frontend better auth client and backend better auth client
+
+loader always runs on server 
+clientloader runs in client : usestate useeffect, async work
+
+post request: action  
+get reqest: loader
