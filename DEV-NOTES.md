@@ -15,7 +15,7 @@ what do i remember about drizzle setup process?
 
 *gotta setup env file and gitignore it 
 *you gotta install drizzle 
-*you can define schema inside drizzle. it not exactly what reads and writes data, but the schema is required so the db knows the shape of the data
+*you can define schema inside drizzle. it not exactly what reads and writes data, but the schema is required so the db knows the shape of the data. sometimes with things like betterauth, it defines the schema for you 
 
 <--some relevant code->
 
@@ -104,3 +104,23 @@ clientloader runs in client : usestate useeffect, async work
 
 post request: action  
 get reqest: loader
+
+
+<--------------------->
+# DAY TWO NOTES!! :DDDD 
+
+better auth flow. 
+frontend makes api call tox like login --> betterauth handler checks database via drizzle adapter ---> tells frontend if it was successful 
+
+loaders?? 
+
+Error: You made a GET request to "/api/chat" but did not provide a `loader` for route "routes/chat", so there is no way to handle the request.
+    at getInternalRouterError (file:///Users/scout/Fractal/chatbot/node_modules/react-router/dist/development/chunk-NISHYRIK.mjs:4652:5)
+    at loadRouteData (file:///Users/scout/Fractal/chatbot/node_modules/react-router/dist/development/chunk-NISHYRIK.mjs:3226:13)
+    at queryImpl (file:///Users/scout/Fractal/chatbot/node_modules/react-router/dist/development/chunk-NISHYRIK.mjs:3060:26)
+    at Object.queryRoute (file:///Users/scout/Fractal/chatbot/node_modules/react-router/dist/development/chunk-NISHYRIK.mjs:3011:24)
+    at handleResourceRequest (file:///Users/scout/Fractal/chatbot/node_modules/react-router/dist/development/chunk-65XJMMLO.mjs:1435:38)
+    at requestHandler (file:///Users/scout/Fractal/chatbot/node_modules/react-router/dist/development/chunk-65XJMMLO.mjs:1196:24)
+    at nodeHandler (/Users/scout/Fractal/chatbot/node_modules/@react-router/dev/dist/vite.js:3414:36)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at /Users/scout/Fractal/chatbot/node_modules/@react-router/dev/dist/vite.js:3420:17
