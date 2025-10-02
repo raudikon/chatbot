@@ -46,7 +46,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
     else {
         throw redirect('/login')
     }
-
 }
 
 
@@ -55,6 +54,7 @@ export default function Chat() {
     const [input, setInput] = useState('');
     const { messages, sendMessage } = useChat();
     let { user, prs } = useLoaderData<typeof loader>()
+    console.log("messages is: :, ", messages)
 
     return (
         <div className="">
