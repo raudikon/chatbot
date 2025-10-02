@@ -10,6 +10,8 @@ import { useState } from 'react';
 import { authClient } from "../../lib/authClient";
 
 import { Octokit } from 'octokit'
+import { db } from "../../db/db";
+import { eods } from "../../db/auth-schema";
 
 export async function loader({ request }: LoaderFunctionArgs) {
 
@@ -48,13 +50,46 @@ export async function loader({ request }: LoaderFunctionArgs) {
     }
 }
 
+export async function action({ request }: ActionFunctionArgs) {
+
+    console.log("Running chat actions ")
+    const bauth_session = await server_auth.api.getSession({
+        headers: request.headers
+    })
+
+    const user_input = await request.text()
+
+    const insert = db.insert(eods).values({
+        userId: bauth_session?.session.userId,
+        userinput: user_input
+    }).returning()
+
+    console.log("insert is")
+    console.log(insert)
+    return insert
+}
+
 
 //EOD Generator 
 export default function Chat() {
     const [input, setInput] = useState('');
     const { messages, sendMessage } = useChat();
     let { user, prs } = useLoaderData<typeof loader>()
-    console.log("messages is: :, ", messages)
+
+    const updateDb = async (input: string) => {
+
+        const res = await fetch("http://localhost:5173/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ input: input }),
+        });
+
+        if (!res.ok) {
+            throw new Error("Failed to send message");
+        }
+        // const data = await res.json();
+        // console.log("Response:", data);
+    }
 
     return (
         <div className="">
@@ -77,6 +112,8 @@ export default function Chat() {
                     e.preventDefault();
                     sendMessage({ text: input });
                     setInput('');
+                    updateDb(input);
+                    //save to db 
                 }}
             >
                 <input
@@ -96,7 +133,6 @@ export default function Chat() {
             </Link>
 
             <p>pull requests. {prs.title}</p>
-
 
         </div>
     );

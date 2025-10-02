@@ -1,14 +1,17 @@
 import { defineConfig } from "drizzle-kit";
 import 'dotenv/config'
 
+const DATABASE_URL = process.env.DATABASE_URL
+
+if (!DATABASE_URL) throw Error("NO DATABASE URL PROVIDED!! >:(")
+
 export default defineConfig({
     dialect: "postgresql",
     schema: "app/db/auth-schema.ts",
-    out: "./db",
+    out: "app/db",
     dbCredentials:
     {
-        url: `postgresql://postgres.hbevpojtlhyvxzgojnnq:85sA4hffRZK5NgzM
-@aws-1-us-east-2.pooler.supabase.com:6543/postgres`
+        url: DATABASE_URL
     },
 });
 
