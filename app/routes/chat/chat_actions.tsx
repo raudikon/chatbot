@@ -5,6 +5,9 @@ import type { UIMessage } from 'ai';
 import { server_auth } from '../../server/auth.server';
 import { redirect } from 'react-router';
 
+import { db } from '../../db/db';
+import { eods } from '../../db/auth-schema';
+
 import { eod_prompt } from './eod_prompt';
 /*
 * Scout's Notes 
@@ -16,14 +19,38 @@ export const maxDuration = 30; //allow streaming responses up to 30s
 
 export async function action({ request }: ActionFunctionArgs) {
 
-    console.log("calling chat actions")
+
     const { messages }: { messages: UIMessage[] } = await request.json();
+    // console.log("Messages backend ", messages[0].parts)
+    // console.log("Messages backend ", messages[0].parts[0])
 
     const result = streamText({
         model: openai('gpt-4o'),
         messages: convertToModelMessages(messages),
         system: eod_prompt
     });
+
+
+    //get user id from session. 
+    // console.log(messages)
+
+    //get messages data from above ^^^ 
+    //use db.insert to save to db 
+    // db.insert(eods).values({
+    //     userId: bauth_session?.session.userId,
+    //     userinput: messages.filter((m) => 
+    //         m.role === 'user'
+    //     )
+    // })
+    // const imnotgay = await request.formData();
+    // const bauth_session = await server_auth.api.getSession({
+    //     headers: request.headers
+    // })
+    // console.log(imnotgay)
+
+
+
+
 
     return result.toUIMessageStreamResponse();
 }

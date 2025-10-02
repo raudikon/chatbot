@@ -1,6 +1,6 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { db } from "../db"; // your drizzle instance
+import { db } from "../db/db"; // your drizzle instance
 import * as mySchema from '../db/auth-schema'
 
 export const server_auth = betterAuth({
@@ -13,7 +13,7 @@ export const server_auth = betterAuth({
 
     trustedOrigins: [
         // "http://localhost:5174"
-        "http://localhost:5173"
+        "http://localhost:5174"
     ],
 
 
