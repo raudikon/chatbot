@@ -195,3 +195,27 @@ goal no2. of the day...
 * be able to make any api call. ask it for your pull requests and it tells it to you in plain text or something. 
 - nede to make an authenticated request to github api 
 ## mini goal 2.1, make a button that displays your pull requests in plain text when you click it. put it in chat page 
+
+sound effects for your eod? 
+
+my goals should be aligned with outcomes... not necessarily research. just try to do outcomes and do resaerch if you need to. 
+
+how to use betterauth to get oauth token and make request to github ? i have to check database. is it a db.select 
+
+
+  const gh_account = await authClient.accountInfo({
+        accountId: bauth_session?.session.userId || ''
+    })
+
+    // const date = '2025-09-22'
+    // // get the data from github
+    // const prsRes = await octokit.request(`GET /search/issues?q=type:pr+author:${gh_account.data?.user.name}+created:${date}`,
+    //     {
+    //         owner: `${gh_account.data?.user.name}`,
+    //         repo: 'REPO',
+    //         headers: {
+    //             'X-GitHub-Api-Version': '2022-11-28',
+    //             'accept': 'application/json'
+    //         }
+    //     })
+

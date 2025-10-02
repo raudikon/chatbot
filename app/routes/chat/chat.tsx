@@ -7,27 +7,30 @@ import { server_auth } from '../../server/auth.server';
 import { redirect, Link, useLoaderData, Form } from 'react-router';
 import { useChat } from '@ai-sdk/react';
 import { useState } from 'react';
+import { authClient } from "../../lib/authClient";
 
 import { Octokit } from 'octokit'
 
 export async function loader({ request }: LoaderFunctionArgs) {
 
-    const session = await server_auth.api.getSession({
+    const bauth_session = await server_auth.api.getSession({
         headers: request.headers
     })
 
-    console.log("Token is :", session?.session.token)
-
-
+    const oauth_token = await authClient.getAccessToken({
+        providerId: 'github',
+        accountId: bauth_session?.session.userId
+    })
 
     // https://github.com/octokit/core.js#readme
     const octokit = new Octokit({
-        auth: process.env.GITHUB_ACCESS_TOKEN
+        auth: oauth_token.data?.accessToken,
+        auto_paginate: true,
     })
 
     // get the data from github
-    const prsRes = await octokit.request('GET /repos/raudikon/tictactoe/pulls', {
-        owner: 'OWNER',
+    const prsRes = await octokit.request(`GET /repos/raudikon/tictactoe/pulls/3`, {
+        owner: 'raudikon',
         repo: 'REPO',
         headers: {
             'X-GitHub-Api-Version': '2022-11-28',
@@ -35,17 +38,16 @@ export async function loader({ request }: LoaderFunctionArgs) {
         }
     })
 
-    if (session?.user) {
-        return { user: session.user, prs: prsRes.data }
+
+    if (bauth_session?.user) {
+        return { user: bauth_session.user, prs: prsRes.data }
         // return { user: session.user}
     }
     else {
         throw redirect('/login')
     }
 
-
 }
-
 
 
 //EOD Generator 
