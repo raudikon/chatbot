@@ -1,7 +1,6 @@
-import { redirect, useLoaderData, type ActionFunctionArgs, type LoaderFunctionArgs } from 'react-router'
+import { redirect, type ActionFunctionArgs, type LoaderFunctionArgs } from 'react-router'
 import { server_auth } from '../server/auth.server';
 import { authClient } from '../lib/authClient';
-import type { Route } from "../../.react-router/types/app/+types/root.ts"
 
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -14,7 +13,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
         return { user: session.user }
     }
     else {
-        throw redirect('/')
+        throw redirect('/login')
     }
 
 }
@@ -25,6 +24,18 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function Protected({ loaderData }: { loaderData: { user: { email: string } } }) {
 
+    // const signOut = async () => {
+
+    //     await authClient.signOut({
+    //         fetchOptions: {
+    //             onSuccess: () => {
+    //                 redirect("/login"); // redirect to login page
+    //             },
+    //         },
+    //     });
+
+    // }
+
     if (!loaderData?.user) {
         return (
             <p>no loader data </p>
@@ -34,7 +45,9 @@ export default function Protected({ loaderData }: { loaderData: { user: { email:
     return (
         <div>
             Ciao, {loaderData != undefined ? loaderData.user.email : "nope"}
+            {/* <button onClick={signOut}>Signout</button> */}
         </div>
+
     )
 
 }

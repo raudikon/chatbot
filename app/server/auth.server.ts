@@ -12,13 +12,21 @@ export const server_auth = betterAuth({
 
 
     trustedOrigins: [
-        "http://localhost:5174"
+        // "http://localhost:5174"
+        "http://localhost:5173"
     ],
 
 
     emailAndPassword:
     {
         enabled: true
+    },
+
+    socialProviders: {
+        github: {
+            clientId: process.env.GITHUB_CLIENT_ID as string,
+            clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
+        }
     }
 });
 

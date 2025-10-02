@@ -39,7 +39,7 @@ export default function SignUp() {
     return (
         <div>
 
-            <h2>Don't have an account? Sign up!</h2>
+            <h2>Sign Up Component</h2>
 
             <Form onSubmit={handleSignUp}>
 
@@ -70,14 +70,19 @@ export default function SignUp() {
                         value={userInputs.user_pw}
                         onChange={(e) => setUserInputs({ ...userInputs, user_pw: e.target.value })}
                     />
-                    <button type="submit">Sign up with email & pw</button>
+                    <button type="submit">Sign up</button>
                 </div>
 
             </Form>
 
 
             <Link to='/login'>
-                <button>Click here to login in instead</button>
+                <button>Have an account? Log in!</button>
+            </Link>
+
+
+            <Link to='/'>
+                <button>Back to home</button>
             </Link>
 
 
