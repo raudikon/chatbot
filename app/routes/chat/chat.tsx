@@ -1,19 +1,63 @@
-import { openai } from '@ai-sdk/openai';
-import { streamText, convertToModelMessages } from 'ai';
-import type { UIMessage } from 'ai';
-
-// Allow streaming responses up to 30 seconds
+import { Button } from "../../shadcn/button"
 
 'use client';
 
+import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router'
+import { server_auth } from '../../server/auth.server';
+import { redirect, Link, useLoaderData, Form } from 'react-router';
 import { useChat } from '@ai-sdk/react';
 import { useState } from 'react';
 
+import { Octokit } from 'octokit'
+
+export async function loader({ request }: LoaderFunctionArgs) {
+
+    const session = await server_auth.api.getSession({
+        headers: request.headers
+    })
+
+    console.log("Token is :", session?.session.token)
+
+
+
+    // https://github.com/octokit/core.js#readme
+    const octokit = new Octokit({
+        auth: process.env.GITHUB_ACCESS_TOKEN
+    })
+
+    // get the data from github
+    const prsRes = await octokit.request('GET /repos/raudikon/tictactoe/pulls', {
+        owner: 'OWNER',
+        repo: 'REPO',
+        headers: {
+            'X-GitHub-Api-Version': '2022-11-28',
+            'accept': 'application/json'
+        }
+    })
+
+    if (session?.user) {
+        return { user: session.user, prs: prsRes.data }
+        // return { user: session.user}
+    }
+    else {
+        throw redirect('/login')
+    }
+
+
+}
+
+
+
+//EOD Generator 
 export default function Chat() {
     const [input, setInput] = useState('');
     const { messages, sendMessage } = useChat();
+    let { user, prs } = useLoaderData<typeof loader>()
+
     return (
-        <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">
+        <div className="">
+            <h1> How was your day?</h1>
+            {user ? <p>Hi, {user.name} thanks for logging in </p> : <p>No one is logged in</p>}
             {messages.map(message => (
                 <div key={message.id} className="whitespace-pre-wrap">
                     {message.role === 'user' ? 'User: ' : 'AI: '}
@@ -26,7 +70,7 @@ export default function Chat() {
                 </div>
             ))}
 
-            <form
+            <Form
                 onSubmit={e => {
                     e.preventDefault();
                     sendMessage({ text: input });
@@ -34,21 +78,25 @@ export default function Chat() {
                 }}
             >
                 <input
-                    className="fixed dark:bg-zinc-900 bottom-0 w-full max-w-md p-2 mb-8 border border-zinc-300 dark:border-zinc-800 rounded shadow-xl"
+                    className=''
                     value={input}
                     placeholder="Say something..."
                     onChange={e => setInput(e.currentTarget.value)}
                 />
 
-                <button type='submit'> Send </button>
-            </form>
+                <Button type='submit'> Generate EOD </Button>
+            </Form>
+
+
+
+            <Link to='/'>
+                <Button>Back Home</Button>
+            </Link>
+
+            <p>pull requests. {prs.title}</p>
+
+
         </div>
     );
 }
 
-/*
-* Scout's Notes 
-- Asynchronous function that makes a POST request, accepting 1 argument. The argument is of type Request and that comes from fetch API 
-- Destructured { messages } is of type UIMessage[] (why are we doing type declarations this way, why are we awaiting req.json)
-- convertToModelMessages converts UIMessage to ModelMessage objects, why are we doing that. 
-*/

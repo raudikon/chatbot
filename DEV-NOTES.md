@@ -112,15 +112,86 @@ get reqest: loader
 better auth flow. 
 frontend makes api call tox like login --> betterauth handler checks database via drizzle adapter ---> tells frontend if it was successful 
 
-loaders?? 
+installed tailwindcss with react router
+https://tailwindcss.com/docs/installation/framework-guides/react-router
 
-Error: You made a GET request to "/api/chat" but did not provide a `loader` for route "routes/chat", so there is no way to handle the request.
-    at getInternalRouterError (file:///Users/scout/Fractal/chatbot/node_modules/react-router/dist/development/chunk-NISHYRIK.mjs:4652:5)
-    at loadRouteData (file:///Users/scout/Fractal/chatbot/node_modules/react-router/dist/development/chunk-NISHYRIK.mjs:3226:13)
-    at queryImpl (file:///Users/scout/Fractal/chatbot/node_modules/react-router/dist/development/chunk-NISHYRIK.mjs:3060:26)
-    at Object.queryRoute (file:///Users/scout/Fractal/chatbot/node_modules/react-router/dist/development/chunk-NISHYRIK.mjs:3011:24)
-    at handleResourceRequest (file:///Users/scout/Fractal/chatbot/node_modules/react-router/dist/development/chunk-65XJMMLO.mjs:1435:38)
-    at requestHandler (file:///Users/scout/Fractal/chatbot/node_modules/react-router/dist/development/chunk-65XJMMLO.mjs:1196:24)
-    at nodeHandler (/Users/scout/Fractal/chatbot/node_modules/@react-router/dev/dist/vite.js:3414:36)
-    at processTicksAndRejections (node:internal/process/task_queues:105:5)
-    at /Users/scout/Fractal/chatbot/node_modules/@react-router/dev/dist/vite.js:3420:17
+installed shadcn with react router
+
+now let's make the whole thing look a little better. 
+i have some questions
+1. is there a way to just apply global css or do i hvae to put all the divs to their own tailwind class? like can i just changes some things in app.css and make it apply everywhere 
+2. what is the purpose of app.css if we are also using utility classes? 
+3. is app.css the only place where styling happens in my app? if not, where else? do we want all styling to happen in one place? 
+
+<------------->
+for the last hour or so before leaving. 
+
+want to protect chat behind a login page, and also protect chat/post 
+just realized protected is not protected (is it?)
+
+1. redirect to chat after logging in. (easy part)
+2. don't expose chat, redirect to login page, and login page redirects to chat. 
+
+i am confused. betterauth thinks i am logged in, so i can see chat and protected as scout@gmail.com. how can i log out? 
+
+implement log out, and then try protecting chat. 
+
+rn the problem is:
+    - you can sign in even when you're signed in.
+    - you can create a new account even when you're signed in. 
+    - you're always signed in and can't sign out, so i can't test whether my chat is protected. 
+
+ideally:
+    - if you're signed in, you can't create new account and can't sign in anymore. 
+    - you can sign out and then chat will be protected. 
+
+I do not understand why it is that when the loader that tests whether there is a session is placed in chat.tsx, it helps prevent access to chat without login, but when it is in chat_actions it does not. I expect React router to go looking for the loader to run it before chat component is run and rendered, and throw the redirect if user session is not present. also, it's not console logging, which means something deeper is happening that I don't fully get... 
+
+ok so it is logging in the backend. lol. lmao even 
+
+<----->
+gpt-4o seems to support streaming lots more effortlessly than gpt-5-nano. wonder whats up with that. 
+
+lets get some good styping done.
+
+<---->
+WIN: I clarified my idea for my project! :D thanks andrew. 
+
+EOD Generator 
+
+- connect to GitHub, get pull requests. 
+    - support login with github
+    - have chatbot tell you a list of your pull requests today? 
+
+[USER EXISTS]
+when a user logs in, ba+drizzle checks the db for the user, and then finds the user's account with a github oauth token. the token is used to connect with github's api, which allows backend to access the pull requests. the backend can send the information to the openAI API so that the bot has access to it when formulating its response. 
+
+<---->
+
+goal no.1 of the day :D done 
+* get oauth+github login working. make sure to save oauth token to database. 
+yes, raudikons access token is in the account table under access token, identified by their user_id 
+
+goal no2. of the day... 
+* be able to make any api call. ask it for your pull requests and it tells it to you in plain text or something. 
+
+
+later 
+* write some text and store it in the database 
+* make a prompt that generates an eod
+* go into the code and explain it a little bit or just get the commit message 
+
+- **Access Token Request:** Use the received code to request an access token from GitHub <- i think this only happens once and not again for the same user 
+   - **API Requests:** Use the access token to make API calls on behalf of the user.
+
+3. **Use GitHub API:**
+   - Make requests to GitHub's API using the access token to interact with the user's repositories, pull requests, etc.
+
+4. **Handle Security:**
+   - Securely store client secret and access tokens.
+   - Ensure your app handles user data and permissions responsibly.
+
+goal no2. of the day... 
+* be able to make any api call. ask it for your pull requests and it tells it to you in plain text or something. 
+- nede to make an authenticated request to github api 
+## mini goal 2.1, make a button that displays your pull requests in plain text when you click it. put it in chat page 

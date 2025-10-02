@@ -2,6 +2,7 @@ import { Form, useActionData } from "react-router";
 import { use, useState } from "react"
 import { Link } from "react-router";
 import { authClient } from "../lib/authClient";
+import { Button } from "../shadcn/button";
 
 type Login = {
     email: string,
@@ -24,7 +25,8 @@ export default function Login() {
             {
                 email: log_in.email,
                 password: log_in.password,
-                callbackURL: "/protected"
+                // callbackURL: '/protected',
+                callbackURL: "/chat"
             },
             {
                 onRequest: (ctx) => {
@@ -39,10 +41,17 @@ export default function Login() {
         )
     }
 
+    const signInGH = async () => {
+        const data = await authClient.signIn.social({
+            provider: "github",
+            callbackURL: "/chat"
+        })
+    }
+
 
     return (
         <div>
-            <h2>Please login!</h2>
+            <h2>Login Component</h2>
             <Form onSubmit={signIn}>
                 <input
                     name="email"
@@ -58,12 +67,18 @@ export default function Login() {
                     value={log_in.password}
                     onChange={(e) => setLogin({ ...log_in, password: e.target.value })}
                 />
-                <button type="submit">Log</button>
+                <Button type="submit">Log In</Button>
             </Form>
 
             <Link to='/signup'>
-                <button>Click here to sign up instead</button>
+                <Button>No Account? Sign Up!</Button>
             </Link>
+
+            <Link to='/'>
+                <Button>Back to home</Button>
+            </Link>
+
+            <Button onClick={signInGH}>GitHub Sign In</Button>
 
 
 
