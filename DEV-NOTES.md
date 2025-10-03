@@ -219,3 +219,12 @@ how to use betterauth to get oauth token and make request to github ? i have to 
     //         }
     //     })
 
+# whats still left to do ? 
+- styling + cosmetic things
+    - look good obv
+    - copy eod 
+- getting pull requests from github api 
+- being able to talk to your past self 
+    - retrieve former messages and create a prompt for it 
+- deploy my app
+    + have people test it out

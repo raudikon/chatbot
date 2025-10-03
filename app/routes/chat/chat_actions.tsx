@@ -49,9 +49,6 @@ export async function action({ request }: ActionFunctionArgs) {
     // console.log(imnotgay)
 
 
-
-
-
     return result.toUIMessageStreamResponse();
 }
 
