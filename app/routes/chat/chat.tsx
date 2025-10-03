@@ -1,17 +1,14 @@
 import { Button } from "../../shadcn/button"
-
-'use client';
-
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router'
 import { server_auth } from '../../server/auth.server';
 import { redirect, Link, useLoaderData, Form } from 'react-router';
 import { useChat } from '@ai-sdk/react';
 import { useState } from 'react';
 import { authClient } from "../../lib/authClient";
-
 import { Octokit } from 'octokit'
 import { db } from "../../db/db";
 import { eods } from "../../db/auth-schema";
+import { getPullReqs } from "./getprs";
 
 export async function loader({ request }: LoaderFunctionArgs) {
 
@@ -31,14 +28,18 @@ export async function loader({ request }: LoaderFunctionArgs) {
     })
 
     // get the data from github
-    const prsRes = await octokit.request(`GET /repos/raudikon/tictactoe/pulls/3`, {
-        owner: 'raudikon',
-        repo: 'REPO',
-        headers: {
-            'X-GitHub-Api-Version': '2022-11-28',
-            'accept': 'application/json'
-        }
-    })
+    // const prsRes = await octokit.request(`GET /repos/${bauth_session?.user.name}/tictactoe/pulls/3`, {
+    //     owner: 'raudikon',
+    //     repo: 'REPO',
+    //     headers: {
+    //         'X-GitHub-Api-Version': '2022-11-28',
+    //         'accept': 'application/json'
+    //     }
+    // })
+
+    const prsRes = await getPullReqs(request)
+
+    console.log("prs", prsRes)
 
 
     if (bauth_session?.user) {
@@ -64,12 +65,7 @@ export async function action({ request }: ActionFunctionArgs) {
         userinput: user_input
     }).returning()
 
-    console.log("insert is")
-    console.log(insert)
-    return insert
 }
-
-
 //EOD Generator 
 export default function Chat() {
     const [input, setInput] = useState('');
@@ -132,8 +128,10 @@ export default function Chat() {
                 <Button>Back Home</Button>
             </Link>
 
-            <p>pull requests. {prs.title}</p>
-
+            <div>
+                <p>pull requests.</p>
+                {prs.map((pr: any) => <p>{pr.title} {pr.closed_at}</p>)}
+            </div>
         </div>
     );
 }
