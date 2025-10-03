@@ -9,6 +9,17 @@ type Login = {
     password: string
 }
 
+
+import {
+    Card,
+    CardAction,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "../shadcn/card"
+
 export default function Login() {
 
     const [log_in, setLogin] = useState<Login>(
@@ -50,40 +61,44 @@ export default function Login() {
 
 
     return (
-        <div>
-            <h2>Login Component</h2>
-            <Form onSubmit={signIn}>
-                <input
-                    name="email"
-                    type="text"
-                    placeholder="Enter email :)"
-                    value={log_in.email}
-                    onChange={(e) => setLogin({ ...log_in, email: e.target.value })}
-                />
-                <input
-                    name="password"
-                    type="text"
-                    placeholder="Enter password :)"
-                    value={log_in.password}
-                    onChange={(e) => setLogin({ ...log_in, password: e.target.value })}
-                />
-                <Button type="submit">Log In</Button>
-            </Form>
+        <div className="relative z-10 flex h-full w-full justify-center items-center bg/20 ">
+            <Card className="w-100">
+                <CardHeader>
+                    <CardTitle className="text-center text-4xl">EOD Generator</CardTitle>
+                    <CardDescription className="text-center text-lg">Please sign up or Log In</CardDescription>
+                </CardHeader>
 
-            <Link to='/signup'>
-                <Button>No Account? Sign Up!</Button>
-            </Link>
+                <CardContent>
+                    <Form onSubmit={signIn}>
+                        <input
+                            name="email"
+                            type="text"
+                            placeholder="Email"
+                            value={log_in.email}
+                            onChange={(e) => setLogin({ ...log_in, email: e.target.value })}
+                        />
+                        <input
+                            name="password"
+                            type="text"
+                            placeholder="Password"
+                            value={log_in.password}
+                            onChange={(e) => setLogin({ ...log_in, password: e.target.value })}
+                        />
+                        <Button variant="outline" type="submit">Log In</Button>
+                    </Form>
 
-            <Link to='/'>
-                <Button>Back to home</Button>
-            </Link>
+                    <Link to='/signup'>
+                        <Button variant="outline"  >No Account? Sign Up!</Button>
+                    </Link>
 
-            <Button onClick={signInGH}>GitHub Sign In</Button>
+                    <Link to='/'>
+                        <Button variant="outline" >Back to home</Button>
+                    </Link>
 
+                    <Button variant="outline" onClick={signInGH}>GitHub Sign In</Button>
+                </CardContent>
 
-
-
+            </Card>
         </div>
-
     );
 }
