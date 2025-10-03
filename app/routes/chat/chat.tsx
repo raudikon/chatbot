@@ -39,8 +39,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
     const prsRes = await getPullReqs(request)
 
-    console.log("prs", prsRes)
-
 
     if (bauth_session?.user) {
         return { user: bauth_session.user, prs: prsRes.data }
@@ -64,6 +62,8 @@ export async function action({ request }: ActionFunctionArgs) {
         userId: bauth_session?.session.userId,
         userinput: user_input
     }).returning()
+
+    return insert
 
 }
 //EOD Generator 
@@ -130,7 +130,7 @@ export default function Chat() {
 
             <div>
                 <p>pull requests.</p>
-                {prs.map((pr: any) => <p>{pr.title} {pr.closed_at}</p>)}
+                {prs.map((pr: any) => <p>{pr.title} {pr.url}</p>)}
             </div>
         </div>
     );

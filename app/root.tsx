@@ -9,7 +9,7 @@ import {
 } from "react-router";
 import type { Route } from "./+types/root";
 
-import appStylesHref from "./app.css?url";
+import "./app.css";
 import Login from "./routes/login";
 
 export const links: Route.LinksFunction = () => [
@@ -44,7 +44,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  return (
+    <div className="flex w-screen h-screen align-center justify-center">
+      <Outlet />
+    </div>);
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
