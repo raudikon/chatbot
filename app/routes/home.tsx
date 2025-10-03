@@ -27,30 +27,35 @@ export async function loader({ request }: LoaderFunctionArgs) {
     }
 
 }
-
 export default function Home() {
-
     let user = useLoaderData<typeof loader>()
 
     return (
-        <div className="">
-            <div className="h-screen w-screen flex justify-center items-center">
-                <Card className="flex w-md">
+        <div className="h-screen w-screen relative overflow-hidden">
+            {/* Background video */}
+            <video
+                autoPlay
+                muted
+                loop
+                className="absolute inset-0 w-full h-full object-cover z-0"
+            >
+                <source src="/pexels-bgvid.mp4" type="video/mp4" />
+            </video>
+
+            {/* Centered card */}
+            <div className="relative z-10 flex h-full w-full justify-center items-center">
+                <Card className="w-96">
                     <CardHeader>
-                        <CardTitle className="flex justify-center"> EOD Generator </CardTitle>
-                        <CardDescription className="flex justify-center"> Organize Your Thoughts </CardDescription>
+                        <CardTitle className="text-center">EOD Generator</CardTitle>
+                        <CardDescription className="text-center">Organize Your Thoughts</CardDescription>
                     </CardHeader>
                     <CardFooter className="flex-col gap-2">
                         <Link to="/chat">
-                            <Button variant="outline" className="w-full"> Begin  </Button>
+                            <Button variant="outline" className="w-full">Begin</Button>
                         </Link>
                     </CardFooter>
                 </Card>
             </div>
-
         </div>
-
     )
-
-
 }
