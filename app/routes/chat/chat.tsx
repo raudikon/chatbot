@@ -143,7 +143,7 @@ export default function Chat() {
                     </CardHeader>
 
                     <CardContent className="flex flex-col w-full h-full items-center justify-center">
-                        <Form className="flex flex-col w-full h-full items-center justify-center gap-4">
+                        <Form className="flex flex-col w-full h-full items-center justify-center gap-4 max-h-161">
 
                             <Textarea readOnly={true}
                                 className="flex-1 w-5/6 h-5/6 resize-none p-5 overflow-y-auto max-h-135"
@@ -168,4 +168,3 @@ export default function Chat() {
         </div>
     );
 }
-
