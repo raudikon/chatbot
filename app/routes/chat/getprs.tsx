@@ -51,9 +51,31 @@ export const getPullReqs = async (request: Request) => {
             },
         })
 
+    // const today = new Date();
+    // const today = '2025-10-02T23:00:53Z'
+    // // console.log("yogurt", today)
+    // pullreqs = pullreqs.data.filter((pr: any) =>
+    //     // console.log(pr.closed_at, "helloooo")
+    //     isSameDay(pr.closed_at, today)
+    //{
+    // ((pr.date.getFullYear() === today.getFullYear()) &&
+    // (pr.date.getMonth() === today.getMonth()) &&
+    // (pr.date.getDate() === today.getDate()))
+    // }
+    //)
+
+    //console.log("YOGURT MALE", pullreqs)
     return pullreqs
 }
 
 // `GET /issues?q=is%3Apr+author%3A${USERNAME}+archived%3Afalse+is%3Aclosed+updated%3A%3E2025-09-29`
 // https://github.com/issues?q=is%3Apr+author%3Araudikon+archived%3Afalse+is%3Aclosed+updated%3A%3E2025-09-29
 
+function isSameDay(date1: String, date2: Date | string) {
+    // console.log(date1)
+    date1 = date1.split('T')[0]
+    let date2String = date2.toString().split('T')[0]
+    return (
+        date1 === date2String
+    );
+}

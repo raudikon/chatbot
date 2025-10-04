@@ -9,40 +9,37 @@ import { Octokit } from 'octokit'
 import { db } from "../../db/db";
 import { eods } from "../../db/auth-schema";
 import { getPullReqs } from "./getprs";
+import { Label } from "@radix-ui/react-label";
+import { CopyButton } from "../../shadcn/index";
+import { Input } from "../../shadcn/input";
+import {
+    Card,
+    CardAction,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "../../shadcn/card"
+
+import { Textarea } from "../../shadcn/textarea";
+import { Copy } from "lucide-react";
+import { useCompletion } from '@ai-sdk/react';
+
 
 export async function loader({ request }: LoaderFunctionArgs) {
 
+
+    //Protect chat endpoint 
     const bauth_session = await server_auth.api.getSession({
         headers: request.headers
     })
-
-    const oauth_token = await authClient.getAccessToken({
-        providerId: 'github',
-        accountId: bauth_session?.session.userId
-    })
-
-    // https://github.com/octokit/core.js#readme
-    const octokit = new Octokit({
-        auth: oauth_token.data?.accessToken,
-        auto_paginate: true,
-    })
-
-    // get the data from github
-    // const prsRes = await octokit.request(`GET /repos/${bauth_session?.user.name}/tictactoe/pulls/3`, {
-    //     owner: 'raudikon',
-    //     repo: 'REPO',
-    //     headers: {
-    //         'X-GitHub-Api-Version': '2022-11-28',
-    //         'accept': 'application/json'
-    //     }
-    // })
-
-    const prsRes = await getPullReqs(request)
-
-
     if (bauth_session?.user) {
+        const prsRes = await getPullReqs(request)
+        console.log(prsRes, "ming")
         return { user: bauth_session.user, prs: prsRes.data }
         // return { user: session.user}
+
     }
     else {
         throw redirect('/login')
@@ -68,8 +65,12 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 //EOD Generator 
 export default function Chat() {
-    const [input, setInput] = useState('');
-    const { messages, sendMessage } = useChat();
+    const [myInput, setInput] = useState('');
+    const { completion, input, handleInputChange, handleSubmit } = useCompletion({
+        api: '/api/completion',
+
+    });
+
     let { user, prs } = useLoaderData<typeof loader>()
 
     const updateDb = async (input: string) => {
@@ -83,55 +84,87 @@ export default function Chat() {
         if (!res.ok) {
             throw new Error("Failed to send message");
         }
-        // const data = await res.json();
-        // console.log("Response:", data);
+
     }
 
+    // console.log(prs, "from the body of chat")
+
+    let summary = ''
+    if (!prs) {
+        summary = 'Awaiting your thoughts. No PRs to show today!'
+    } else {
+        summary = [(completion === '') ? "Awaiting your thoughts..." : completion,
+            "** PRs **",
+        ...prs.map((pr: any) => `• ${pr.title} — ${pr.url}`)
+        ].join("\n");
+    }
+
+
     return (
-        <div className="">
-            <h1> How was your day?</h1>
-            {user ? <p>Hi, {user.name} thanks for logging in </p> : <p>No one is logged in</p>}
-            {messages.map(message => (
-                <div key={message.id} className="whitespace-pre-wrap">
-                    {message.role === 'user' ? 'User: ' : 'AI: '}
-                    {message.parts.map((part, i) => {
-                        switch (part.type) {
-                            case 'text':
-                                return <div key={`${message.id}-${i}`}>{part.text}</div>;
-                        }
-                    })}
-                </div>
-            ))}
+        <div className="flex z-10 h-full w-full justify-center items-center gap-10 bg">
 
-            <Form
-                onSubmit={e => {
-                    e.preventDefault();
-                    sendMessage({ text: input });
-                    setInput('');
-                    updateDb(input);
-                    //save to db 
-                }}
-            >
-                <input
-                    className=''
-                    value={input}
-                    placeholder="Say something..."
-                    onChange={e => setInput(e.currentTarget.value)}
-                />
+            <div className="flex size-full justify-center items-center">
+                <Card className="flex w-4/5 h-4/5">
 
-                <Button type='submit'> Generate EOD </Button>
-            </Form>
+                    <CardHeader>
+                        <CardTitle className="text-center text-4xl">Your Thoughts...</CardTitle>
+                    </CardHeader>
 
+                    <CardContent className="flex flex-col w-full h-full items-center justify-center">
+                        <Form className="flex flex-col w-full h-full items-center justify-center gap-4"
+                            onSubmit={e => {
+                                e.preventDefault();
+                                handleSubmit();
+                                updateDb(myInput);
+                            }}
+                        >
+                            <Textarea
+                                className="w-5/6 h-5/6 resize-none p-5" placeholder="Was today a good day?"
+                                value={input}
+                                name='prompt'
+                                onChange={handleInputChange}
+                                id="input"
+                            />
 
+                            <Button className="w-1/3" variant="outline" type="submit">Get My EOD</Button>
+                        </Form>
+                    </CardContent>
 
-            <Link to='/'>
-                <Button>Back Home</Button>
-            </Link>
+                    {/* <p>{completion}</p> */}
+                </Card>
 
-            <div>
-                <p>pull requests.</p>
-                {prs.map((pr: any) => <p>{pr.title} {pr.url}</p>)}
             </div>
+
+            <div className="flex size-full justify-center items-center">
+                <Card className="w-4/5 h-4/5">
+
+                    <CardHeader>
+                        <CardTitle className="text-center text-4xl">Generated EOD</CardTitle>
+                    </CardHeader>
+
+                    <CardContent className="flex flex-col w-full h-full items-center justify-center">
+                        <Form className="flex flex-col w-full h-full items-center justify-center gap-4">
+
+                            <Textarea readOnly={true}
+                                className="flex-1 w-5/6 h-5/6 resize-none p-5 overflow-y-auto max-h-135"
+                                value={summary}
+                            />
+
+                            <CopyButton
+                                variant="outline"
+                                content={[(completion === '') ? "Awaiting your thoughts..." : completion,
+                                    "** PRs **",
+                                ...prs.map((pr: any) => `• ${pr.title} — ${pr.url}`)
+                                ].join("\n")}
+                            />
+                        </Form>
+                    </CardContent>
+
+
+                </Card>
+            </div>
+
+
         </div>
     );
 }
