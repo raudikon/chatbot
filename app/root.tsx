@@ -46,6 +46,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <div className="flex w-screen h-screen align-center justify-center">
+      {/* <video
+        autoPlay
+        muted
+        loop
+        className="absolute inset-0 w-full h-full object-cover z-0"
+      >
+        <source src="/pexels-bgvid.mp4" type="video/mp4" />
+      </video> */}
       <Outlet />
     </div>);
 }

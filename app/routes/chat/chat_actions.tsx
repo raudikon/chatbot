@@ -19,36 +19,18 @@ export const maxDuration = 30; //allow streaming responses up to 30s
 
 export async function action({ request }: ActionFunctionArgs) {
 
-
-    const { messages }: { messages: UIMessage[] } = await request.json();
-    // console.log("Messages backend ", messages[0].parts)
-    // console.log("Messages backend ", messages[0].parts[0])
+    // const { messages }: { messages: UIMessage[] } = await request.json();
+    const { prompt }: { prompt: string } = await request.json()
 
     const result = streamText({
         model: openai('gpt-4o'),
-        messages: convertToModelMessages(messages),
+        // messages: convertToModelMessages(messages),
+        prompt: prompt,
         system: eod_prompt
     });
 
 
-    //get user id from session. 
-    // console.log(messages)
-
-    //get messages data from above ^^^ 
-    //use db.insert to save to db 
-    // db.insert(eods).values({
-    //     userId: bauth_session?.session.userId,
-    //     userinput: messages.filter((m) => 
-    //         m.role === 'user'
-    //     )
-    // })
-    // const imnotgay = await request.formData();
-    // const bauth_session = await server_auth.api.getSession({
-    //     headers: request.headers
-    // })
-    // console.log(imnotgay)
-
-
     return result.toUIMessageStreamResponse();
 }
+
 
